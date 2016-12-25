@@ -24,6 +24,15 @@ class Parser_model extends CI_Model
         $reply = $this->db->query($q);
         return $reply;
 	}
+	// добавление поля ad_hash в запись по ad_id
+	public function upd_record($ad_id, $ad_hash)
+	{
+		$q = "UPDATE `{$this->db->dbprefix('digest')}`
+			SET `ad_hash` = {$ad_hash}
+			WHERE `ad_id` = {$ad_id}";
+		$rep = $this->db->query($q);
+		return $rep;
+	}
 
 	// SELECT
 
@@ -108,4 +117,15 @@ class Parser_model extends CI_Model
         } else $row = false;
         return $row;
 	}
+	// выборка всех записей (поля: src_link, ad_title )
+	public function all_for_hash()
+	 {
+		$q = "SELECT `ad_id`,`src_link`,`ad_title` FROM `{$this->db->dbprefix('digest')}`";
+		$query = $this->db->query($q);
+		if ($query->num_rows() > 0){
+			$rows = array();
+			$rows = $query->result_array();
+		} else $rows = false;
+		return $rows;
+	 }
 }

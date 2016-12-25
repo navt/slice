@@ -288,5 +288,23 @@ class Parser extends CI_Controller {
 		    }
 		}
 	}
+	public function addHashField()
+	{
+		$rows =$this->parser_model->all_for_hash();
+		if ($rows !== false){
+			$i = 0;
+			foreach ($rows as $row){
+				// формируем уникальный хеш-код для каждой записи
+				$hash = '\''.md5($row['src_link'] . $row['ad_title']).'\'' ;
+
+				$res = $this->parser_model->upd_record($row['ad_id'], $hash);
+				if ($res === false){
+					echo "Неудачное обновление записи с ad_id = {$row['ad_id']}<br>";
+				} else $i++;
+			}
+			echo "Обновлено {$i} записей.";
+		}
+
+	}
 
 }
