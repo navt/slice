@@ -1,0 +1,41 @@
+h1 {
+	font-size: 2.0em;   /* 2.8235em */
+    line-height: 1.8em; /* 3.0588em */
+    color: #fff;
+}
+h2 {
+	font-size: 1.2em;
+    line-height: 1.0em;
+}
+h1 a {
+	color: #fff;
+	text-decoration: none;
+}
+h1 a:hover {
+    color: #EE6900;
+}
+.wrap {
+	width: 100%;
+	padding: 0% 1% 0% 1%;
+}
+.bg-yellow {
+	background: #FF9F32;
+}
+.date {
+	margin-top: 1.2em;
+	color: #fff;
+}
+.height-indent {
+	margin-top: 0.7em;
+}
+.footer {
+	padding: 1em 0 1em 0;
+	color: #fff;
+}
+.footer a {
+	color: #fff;
+	text-decoration: none;
+}
+.footer a:hover {
+	color: #EE6900;
+}
