@@ -7,9 +7,9 @@ class Parser_model extends CI_Model
 	public function i_ad($fields=array())
 	{
         $q = "INSERT INTO `{$this->db->dbprefix('digest')}`
-	        (ad_date,src_id,src_link,ad_title,ad_text)
+	        (ad_date,ad_hash,src_id,src_link,ad_title,ad_text)
 	        VALUES ({$fields[1]},{$fields[2]},
-	        	{$fields[3]},{$fields[4]},{$fields[5]})";
+	        	{$fields[3]},{$fields[4]},{$fields[5]},{$fields[6]})";
         $reply = $this->db->query($q);
         return $reply;
 	}
@@ -127,5 +127,22 @@ class Parser_model extends CI_Model
 			$rows = $query->result_array();
 		} else $rows = false;
 		return $rows;
+	 }
+	 // есть ли запись в БД с таким ad_hash?
+	 public function find_hash($hash='')
+	 {
+	 	$hash = '\''.$hash. '\'';
+	 	$row = array();
+	 	$q = "SELECT `ad_id`
+		 	FROM `{$this->db->dbprefix('digest')}`
+		 	WHERE `ad_hash` = {$hash}
+		 	LIMIT 1";
+		$query = $this->db->query($q);
+		// если запись есть, возвращаем ad_id, нет - false
+		if ($query->num_rows() > 0){
+        	$row = $query->row_array();
+        	$replay = (int)$row['ad_id'];
+        } else $replay = false;
+        return $replay;
 	 }
 }

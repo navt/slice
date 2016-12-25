@@ -48,26 +48,39 @@ class Parser extends CI_Controller {
 			$e = $this->simple_html_dom->find('h1');
 			$h1 = $e[0]->plaintext;                 // достаём из неё  h1
 			$h1 = html_entity_decode($h1);
-	 		$e = $this->simple_html_dom->find('div[class=text]');
-			$content = $e[0]->plaintext;            // и текст статьи
-			$this->simple_html_dom->clear();
-			$content = cropContent($content, 250);  // обрезаем текст до 250 символов
-			// заменяем имеющиеся html-сущности на символы html
-			$content = html_entity_decode($content);
-			// заполняем поля запроса и пишем анонс статьи в БД
-			$fields = array(
-				null,
-				'\''.date('Y-m-d H:i:s').'\'',
-				3,
-				$this->db->escape($link),
-				$this->db->escape(htmlspecialchars($h1, ENT_QUOTES)),
-				$this->db->escape(htmlspecialchars($content, ENT_QUOTES))
-				);
-			$replay = $this->parser_model->i_ad($fields);
-			if ($replay === false){
-			 	echo __METHOD__ . ' Ошибка записи анонса статьи в базу данных.'.
-			 	'<br>'.$h1.'<br>'.$content.'<br>';
+
+			// у нас есть ссылка и h1, проверим нет ли аналогичной записи в БД
+	 		$h1 = htmlspecialchars($h1, ENT_QUOTES);
+	 		$hash = md5($link . $h1);
+	 		// есть ли запись в БД?
+	 		$replay = $this->parser_model->find_hash($hash);
+			if ($replay == false) {
+				$e = $this->simple_html_dom->find('div[class=text]');
+				$content = $e[0]->plaintext;            // и текст статьи
+				$this->simple_html_dom->clear();
+				$content = cropContent($content, 250);  // обрезаем текст до 250 символов
+				// заменяем имеющиеся html-сущности на символы html
+				$content = html_entity_decode($content);
+				// заполняем поля запроса и пишем анонс статьи в БД
+				$fields = array(
+					null,
+					'\''.date('Y-m-d H:i:s').'\'',
+					'\''.$hash. '\'',
+					3,
+					$this->db->escape($link),
+					$this->db->escape($h1),
+					$this->db->escape(htmlspecialchars($content, ENT_QUOTES))
+					);
+				$replay = $this->parser_model->i_ad($fields);
+				if ($replay === false){
+				 	echo __METHOD__ . ' Ошибка записи анонса статьи в базу данных.'.
+				 	'<br>'.$h1.'<br>'.$content.'<br>';
+				}
+			}else{
+				// просто ничего не пишем в БД
+				echo "Запись с ad_hash = {$hash} имеет ad_id = {$replay}.<br>";
 			}
+
 		}
 	}
 
@@ -288,6 +301,7 @@ class Parser extends CI_Controller {
 		    }
 		}
 	}
+	// добавление значения поля ad_hash в таблицу digest
 	public function addHashField()
 	{
 		$rows =$this->parser_model->all_for_hash();
@@ -305,6 +319,15 @@ class Parser extends CI_Controller {
 			echo "Обновлено {$i} записей.";
 		}
 
+	}
+	public function ex()
+	{
+		$links = array();
+		// количество статей, забираемых с 1 сайта
+	    $qty = 3;
+		// парсим Курсив
+		$links = $this->mainCursiv($qty);
+		$this->pagesCursiv($links);
 	}
 
 }
