@@ -344,14 +344,5 @@ class Parser extends CI_Controller {
 		}
 
 	}
-	public function ex()
-	{
-		$links = array();
-		// количество статей, забираемых с 1 сайта
-	    $qty = 3;
-		// парсим IvanovoNews
-		$links = $this->newsIN($qty);
-		$this->pagesIN($links);
-	}
 
 }
