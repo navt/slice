@@ -35,7 +35,7 @@ class Parser extends CI_Controller {
 			}
 			$i++;
 		}
-		asort($links);                  // сортируем в порядке возрастания № новости
+		arsort($links);                  // сортируем в порядке возрастания № новости
 		$this->simple_html_dom->clear();
 		return $links;
 	}
