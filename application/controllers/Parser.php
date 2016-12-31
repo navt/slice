@@ -144,7 +144,7 @@ class Parser extends CI_Controller {
 					'\''.$hash. '\'',
 					1,
 					$this->db->escape($link),
-					$this->db->escape(htmlspecialchars($h1, ENT_QUOTES)),
+					$this->db->escape($h1),
 					$this->db->escape(htmlspecialchars($content, ENT_QUOTES))
 					);
 				$replay = $this->parser_model->i_ad($fields);
@@ -219,7 +219,7 @@ class Parser extends CI_Controller {
 					'\''.$hash. '\'',
 					2,
 					$this->db->escape($link),
-					$this->db->escape(htmlspecialchars($h1, ENT_QUOTES)),
+					$this->db->escape($h1),
 					$this->db->escape(htmlspecialchars($content, ENT_QUOTES))
 					);
 				$replay = $this->parser_model->i_ad($fields);

@@ -12,6 +12,7 @@ header('Content-Type: text/html; charset= utf-8');
 	<base href="<?php echo base_url();?>">
 	<link rel="stylesheet" type="text/css" href="../dress/css/kube.min.css">
 	<link rel="stylesheet" type="text/css" href="../dress/css/adapting.css">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<script src="../dress/js/jquery-1.12.4.min.js"></script>
 	<script src="../dress/js/kube.min.js"></script>
 	<script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
