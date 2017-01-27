@@ -325,7 +325,41 @@ class Parser extends CI_Controller {
 		    }
 		}
 	}
+	// удаление по cron записей старше $age дней
+	public function deleteOld($age = 30)
+	{
+		$this->config->load('tuning');
+		$noError = true;
+		// полюбасу оставляем записи за 10 крайних дней
+		if ($age < 10){
+			$noError = false;
+		}
+		if ($noError){
+			$now = date('Y-m-d H:i:s');
+			$fromMoment = modifyTime($now, '-'.$age.'day');
+
+			$respond = $this->parser_model->delete($fromMoment);
+			if ($respond === true){
+				echo "Записи старше $fromMoment успешно удалены.";
+			} else{
+				$noError = false;
+			}
+		}
+		if ($noError === false) {
+			$e_mail    = $this->config->item('report_email');
+			$subject   = 'Ошибка выполнения cron';
+			$message[] = '<html>';
+			$message[] = '<head><title>Ошибка выполнения cron</title></head>';
+			$message[] = '<body>Что-то пошло не так при удалнении записей из БД.<br>';
+			$message[] = "Удалялись записи старше $fromMoment .";
+			$message[] = 'Нужно смотреть сайт slice и БД.';
+			$message[] = '</body></html>';
+
+            mail_utf8($e_mail, $e_mail, $subject, implode("\r\n", $message));
+		}
+	}
 	// добавление значения поля ad_hash в таблицу digest
+	/*
 	public function addHashField()
 	{
 		$rows =$this->parser_model->all_for_hash();
@@ -344,5 +378,6 @@ class Parser extends CI_Controller {
 		}
 
 	}
+	*/
 
 }

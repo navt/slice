@@ -145,4 +145,13 @@ class Parser_model extends CI_Model
         } else $replay = false;
         return $replay;
 	 }
+
+	 // DELETE
+	 public function delete($fromMoment='2010-12-12 00:00:00')
+	 {
+	 	$q = "DELETE FROM `{$this->db->dbprefix('digest')}`
+		 	WHERE `ad_date` < '{$fromMoment}'";
+		$query = $this->db->query($q);
+		return $query;
+	 }
 }

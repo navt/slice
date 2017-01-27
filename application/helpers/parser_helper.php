@@ -48,3 +48,17 @@ if ( ! function_exists('modifyTime'))
 		return $date->format($format);
 	}
 }
+if ( ! function_exists('mail_utf8'))
+{
+	function mail_utf8($to, $fromEmail, $subject = '(No subject)', $message = '')
+	{
+	    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+
+	    $headers[] = 'MIME-Version: 1.0';
+	    $headers[] = 'Content-type: text/html; charset=utf-8';
+	    $headers[] = 'X-Mailer: PHP v' . phpversion();
+	    $headers[] = "From: {$fromEmail}";
+
+	    return mail($to, $subject, $message, implode("\r\n", $headers));
+	}
+}
