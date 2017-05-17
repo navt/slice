@@ -77,6 +77,7 @@ class Parser extends CI_Controller {
 				 	'<br>'.$h1.'<br>'.$content.'<br>';
 				}
 			}else{
+				$this->simple_html_dom->clear();
 				// просто ничего не пишем в БД
 				echo "Запись с ad_hash = {$hash} имеет ad_id = {$replay}.<br>";
 			}
@@ -91,10 +92,16 @@ class Parser extends CI_Controller {
 		$host = 'https://chastnik.ru';
 		$url  = 'https://chastnik.ru/news/';
 		$links = array();
+		$allLinks = array();
+
 		$str   = getPage($url);             // получаем страницу
 		$this->simple_html_dom->load($str); // скармливаем классу
-		foreach($this->simple_html_dom->find('a[class=s-title] ') as $e){
-			$link = $host.$e->href;
+		foreach($this->simple_html_dom->find('div[class=block__title news__title] a') as $e){
+			$allLinks[] = $e->href;
+		}
+		$allLinks = array_unique($allLinks);
+		foreach ($allLinks as $adds) {
+			$link = $host.$adds;
 			// в массив пишем только те значения, которые по мнению фильтра
 			// являются URL
 			if (filter_var($link, FILTER_VALIDATE_URL)){
@@ -114,7 +121,7 @@ class Parser extends CI_Controller {
 		foreach ($links as $link){
 			$str = getPage($link);                  // получаем страницу
 			$this->simple_html_dom->load($str);
-			$e = $this->simple_html_dom->find('h1');
+			$e = $this->simple_html_dom->find('h1[class=news-detail__title]');
 			$h1 = $e[0]->plaintext;                 // достаём из неё  h1
 			$h1 = html_entity_decode($h1);
 
@@ -124,13 +131,7 @@ class Parser extends CI_Controller {
 	 		// есть ли запись в БД?
 	 		$replay = $this->parser_model->find_hash($hash);
 			if ($replay == false){
-				// подчистим некоторые элементы: h1,breadcrumbs,h3
-				$e[0]->innertext = '';
-				$e = $this->simple_html_dom->find('div[class=breadcrumbs]');
-				$e[0]->innertext = '';
-				$e = $this->simple_html_dom->find('h3');
-				$e[0]->innertext = '';
-				$e = $this->simple_html_dom->find('div[class=page]');
+				$e = $this->simple_html_dom->find('div[class=news-detail__text content]');
 				$content = $e[0]->plaintext;
 
 				$this->simple_html_dom->clear();
@@ -153,6 +154,7 @@ class Parser extends CI_Controller {
 				 	'<br>'.$h1.'<br>'.$content.'<br>';
 				}
 			}else{
+				$this->simple_html_dom->clear();
 				// просто ничего не пишем в БД
 				echo "Запись с ad_hash = {$hash} имеет ad_id = {$replay}.<br>";
 			}
@@ -275,6 +277,7 @@ class Parser extends CI_Controller {
 		    $minute = date('i');
 		    // скрипт имеет возможность запуска только в 0 минуту часа
 		    if ($minute > 0) $noError = false;
+
 		}
 		if ($noError){
 		    switch ($oclock) {
