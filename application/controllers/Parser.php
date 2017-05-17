@@ -261,7 +261,7 @@ class Parser extends CI_Controller {
 	public function cron($psw='')
 	{
 		$hash = '$2y$10$CUw83L.88hBijvrm6O8OkuHDLzYeiyyWUsQanaB5jqIE2vzEAke/m';
-		// justnow
+		// j---n--
 		$noError = true;
 
 		if ( ! password_verify($psw, $hash)) $noError = false;
